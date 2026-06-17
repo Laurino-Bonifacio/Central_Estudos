@@ -1,0 +1,32 @@
+Exatamente! Essa é a alma do projeto. O sistema precisa ser vivo: cada estudante faz o seu próprio cadastro, entra no seu painel e tem total liberdade para adicionar suas próprias matérias, marcar suas provas e organizar o próprio calendário.
+
+No momento, o seu painel só tem o "Read" (Ler) do CRUD. Para que você (ou qualquer usuário) decida o que colocar lá, precisamos construir o "Create" (Criar) direto na interface, usando os formulários do Django.
+
+Vamos mandar o Agente construir essas telas de adição para que os botões do seu menu inferior passem a funcionar.
+
+Copie o texto abaixo e envie para o Agente do Replit:
+
+Atue como Desenvolvedor Django Sênior. Agora precisamos permitir que o próprio usuário insira seus dados pelo painel (Frontend). Siga estes passos para implementar os formulários de criação:
+
+1. Criação dos Formulários (estudos/forms.py):
+Crie um arquivo forms.py dentro do app estudos. Use ModelForm para criar dois formulários:
+
+DisciplinaForm baseado no modelo Disciplina (exclua o campo user ou usuario).
+
+AvaliacaoForm baseado no modelo Avaliacao (exclua o campo user ou usuario). Importante: o campo de disciplina neste form deve mostrar apenas as disciplinas cadastradas pelo usuário logado.
+
+2. Criação das Views (estudos/views.py):
+Crie duas novas views protegidas por @login_required:
+
+adicionar_disciplina: renderiza o form, valida o POST, vincula o request.user à instância antes de salvar e redireciona para o dashboard.
+
+adicionar_avaliacao: renderiza o form, valida o POST, vincula o request.user à instância e redireciona para o dashboard.
+
+3. Criação dos Templates HTML:
+Crie adicionar_disciplina.html e adicionar_avaliacao.html. Use o mesmo padrão visual do Bootstrap que você usou no dashboard. Certifique-se de usar {% csrf_token %} e estilize os inputs com as classes do Bootstrap (form-control).
+
+4. Atualização de Rotas e Links:
+
+Adicione essas duas novas views no urls.py.
+
+No dashboard.html, atualize os ícones do menu inferior ou adicione um botão "Flutuante" (FAB) principal (um sinal de "+") que abra as opções de adicionar matéria ou avaliação.
