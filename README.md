@@ -1,4 +1,10 @@
-# Núcleo Acadêmico
+# Central de Estudos
+
+**Integrantes da equipe:** Laurino Bonifacio e Sandrine Abreu
+
+**Descrição do problema/solução:** Muitos estudantes perdem tempo organizando datas de provas e procurando conteúdos espalhados. A Central de Estudos resolve isso oferecendo um sistema rápido e centralizado para cadastrar avaliações, organizar matérias e facilitar o foco no que realmente importa: aprender.
+
+**Público-alvo:** Estudantes do ensino médio, universitários e concurseiros que buscam organização acadêmica.
 
 ## ## 🚧 Status do Projeto
 
