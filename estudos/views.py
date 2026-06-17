@@ -74,6 +74,13 @@ def remover_disciplina(request, pk):
     return redirect('dashboard')
 
 
+@login_required
+def remover_avaliacao(request, pk):
+    avaliacao = get_object_or_404(Avaliacao, pk=pk, usuario=request.user)
+    avaliacao.delete()
+    return redirect('dashboard')
+
+
 def cadastrar_usuario(request):
     if request.user.is_authenticated:
         return redirect('dashboard')

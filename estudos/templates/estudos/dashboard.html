@@ -86,6 +86,14 @@
       background: #f0faf4; display: flex; align-items: center; justify-content: center;
       color: #20c997; font-size: 1.1rem;
     }
+    .btn-remover-av {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      border: 2px solid #fde8ec; background: #fff5f7;
+      display: flex; align-items: center; justify-content: center;
+      color: #dc3545; font-size: 0.8rem; cursor: pointer;
+      transition: all 0.2s; text-decoration: none;
+    }
+    .btn-remover-av:hover { background: #dc3545; color: #fff; border-color: #dc3545; }
 
     /* Disciplina chip com botão remover */
     .disciplina-row {
@@ -256,7 +264,15 @@
             </div>
           </div>
           {% if av.estudo_concluido %}
-            <div class="badge-concluida"><i class="bi bi-check-circle-fill"></i></div>
+            <div class="d-flex align-items-center gap-2">
+              <div class="badge-concluida"><i class="bi bi-check-circle-fill"></i></div>
+              <a href="{% url 'remover_avaliacao' av.pk %}"
+                 class="btn-remover-av"
+                 title="Apagar avaliação"
+                 onclick="return confirm('Apagar \'{{ av.titulo }}\' permanentemente?')">
+                <i class="bi bi-trash3"></i>
+              </a>
+            </div>
           {% else %}
             <a href="{% url 'concluir_avaliacao' av.pk %}" class="btn-concluir" title="Marcar como concluída">
               <i class="bi bi-check-lg"></i>
