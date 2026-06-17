@@ -78,27 +78,77 @@
 
     .empty-state { color: #adb5bd; text-align: center; padding: 1rem; font-size: 0.9rem; }
 
+    /* Bottom Nav */
     .nav-bottom {
       position: fixed; bottom: 0; left: 0; right: 0;
       background: #fff;
       border-top: 1px solid #e9ecef;
-      display: flex; justify-content: space-around;
-      padding: 0.6rem 0 0.4rem;
+      display: flex; justify-content: space-around; align-items: center;
+      padding: 0.5rem 0 0.4rem;
       z-index: 200;
       box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
     }
     .nav-item-btn {
       display: flex; flex-direction: column; align-items: center;
       color: #adb5bd; text-decoration: none; font-size: 0.65rem;
-      font-weight: 600; gap: 2px; padding: 0 1rem;
+      font-weight: 600; gap: 2px; padding: 0 0.6rem;
     }
     .nav-item-btn.active, .nav-item-btn:hover { color: #4361ee; }
     .nav-item-btn i { font-size: 1.3rem; }
+
+    /* FAB */
+    .fab-container {
+      position: relative; display: flex; flex-direction: column; align-items: center;
+    }
+    .fab-main {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, #4361ee, #7209b7);
+      border: none; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(67,97,238,0.45);
+      cursor: pointer; transition: transform 0.2s;
+      margin-top: -24px;
+    }
+    .fab-main:hover { transform: scale(1.08); }
+    .fab-main i { color: #fff; font-size: 1.5rem; transition: transform 0.25s; }
+    .fab-main.open i { transform: rotate(45deg); }
+
+    .fab-menu {
+      position: absolute; bottom: 70px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; gap: 0.5rem; align-items: center;
+      pointer-events: none; opacity: 0; transition: opacity 0.2s;
+    }
+    .fab-menu.open { opacity: 1; pointer-events: all; }
+    .fab-option {
+      display: flex; align-items: center; gap: 0.6rem;
+      background: #fff; border-radius: 24px;
+      padding: 0.55rem 1.1rem 0.55rem 0.7rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+      text-decoration: none; color: #1a1a2e;
+      font-size: 0.85rem; font-weight: 600;
+      white-space: nowrap;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .fab-option:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.18); color: #1a1a2e; }
+    .fab-option .fab-icon {
+      width: 34px; height: 34px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+
+    .fab-overlay {
+      display: none; position: fixed; inset: 0; z-index: 150;
+      background: rgba(0,0,0,0.25); backdrop-filter: blur(2px);
+    }
+    .fab-overlay.open { display: block; }
 
     .content-wrap { padding: 1rem 1rem 6rem; }
   </style>
 </head>
 <body>
+
+  <!-- Overlay para fechar FAB ao clicar fora -->
+  <div class="fab-overlay" id="fabOverlay" onclick="toggleFab()"></div>
 
   <!-- Top Bar -->
   <div class="topbar d-flex justify-content-between align-items-center">
@@ -144,7 +194,12 @@
     </div>
 
     <!-- Próximas Avaliações -->
-    <div class="section-title"><i class="bi bi-calendar-event me-1"></i>Próximas Avaliações</div>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div class="section-title mb-0"><i class="bi bi-calendar-event me-1"></i>Próximas Avaliações</div>
+      <a href="{% url 'adicionar_avaliacao' %}" class="btn btn-sm" style="background:#fff0f6; color:#e63980; border-radius:8px; font-size:0.78rem; font-weight:600;">
+        <i class="bi bi-plus-lg me-1"></i>Nova
+      </a>
+    </div>
     {% if proximas_avaliacoes %}
       {% for av in proximas_avaliacoes %}
         <div class="avaliacao-card">
@@ -175,7 +230,12 @@
     {% endif %}
 
     <!-- Disciplinas -->
-    <div class="section-title mt-4"><i class="bi bi-grid me-1"></i>Minhas Disciplinas</div>
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+      <div class="section-title mb-0"><i class="bi bi-grid me-1"></i>Minhas Disciplinas</div>
+      <a href="{% url 'adicionar_disciplina' %}" class="btn btn-sm" style="background:#f0f4ff; color:#4361ee; border-radius:8px; font-size:0.78rem; font-weight:600;">
+        <i class="bi bi-plus-lg me-1"></i>Nova
+      </a>
+    </div>
     <div>
       {% if disciplinas %}
         {% for d in disciplinas %}
@@ -190,21 +250,49 @@
 
   </div>
 
-  <!-- Bottom Navigation -->
+  <!-- Bottom Navigation com FAB central -->
   <nav class="nav-bottom">
     <a href="{% url 'dashboard' %}" class="nav-item-btn active">
       <i class="bi bi-house-fill"></i>Início
     </a>
-    <a href="#" class="nav-item-btn">
-      <i class="bi bi-journal-text"></i>Disciplinas
+    <a href="{% url 'adicionar_disciplina' %}" class="nav-item-btn">
+      <i class="bi bi-journal-text"></i>Matérias
     </a>
-    <a href="#" class="nav-item-btn">
-      <i class="bi bi-calendar3"></i>Calendário
+
+    <!-- FAB central -->
+    <div class="fab-container" style="z-index:201;">
+      <div class="fab-menu" id="fabMenu">
+        <a href="{% url 'adicionar_avaliacao' %}" class="fab-option">
+          <span class="fab-icon" style="background:#fff0f6;"><i class="bi bi-calendar-plus" style="color:#e63980;"></i></span>
+          Nova Avaliação
+        </a>
+        <a href="{% url 'adicionar_disciplina' %}" class="fab-option">
+          <span class="fab-icon" style="background:#f0f4ff;"><i class="bi bi-journal-plus" style="color:#4361ee;"></i></span>
+          Nova Matéria
+        </a>
+      </div>
+      <button class="fab-main" id="fabBtn" onclick="toggleFab()">
+        <i class="bi bi-plus-lg"></i>
+      </button>
+    </div>
+
+    <a href="{% url 'adicionar_avaliacao' %}" class="nav-item-btn">
+      <i class="bi bi-calendar3"></i>Avaliações
     </a>
     <a href="#" class="nav-item-btn">
       <i class="bi bi-folder2"></i>Materiais
     </a>
   </nav>
 
+  <script>
+    function toggleFab() {
+      const btn = document.getElementById('fabBtn');
+      const menu = document.getElementById('fabMenu');
+      const overlay = document.getElementById('fabOverlay');
+      btn.classList.toggle('open');
+      menu.classList.toggle('open');
+      overlay.classList.toggle('open');
+    }
+  </script>
 </body>
 </html>
