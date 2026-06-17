@@ -1,18 +1,26 @@
 from django import forms
 from .models import Disciplina, Avaliacao
 
+NIVEL_CHOICES = [(i, str(i)) for i in range(1, 6)]
+
 
 class DisciplinaForm(forms.ModelForm):
     class Meta:
         model = Disciplina
-        exclude = ['usuario']
+        fields = ['nome', 'cor_identificacao', 'dificuldade', 'quantidade_conteudo', 'peso']
         widgets = {
             'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Matemática'}),
             'cor_identificacao': forms.TextInput(attrs={'class': 'form-control form-control-color', 'type': 'color'}),
+            'dificuldade': forms.Select(choices=NIVEL_CHOICES, attrs={'class': 'form-select'}),
+            'quantidade_conteudo': forms.Select(choices=NIVEL_CHOICES, attrs={'class': 'form-select'}),
+            'peso': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1', 'min': '0.1', 'max': '10'}),
         }
         labels = {
             'nome': 'Nome da Matéria',
             'cor_identificacao': 'Cor de Identificação',
+            'dificuldade': 'Dificuldade (1 = fácil, 5 = muito difícil)',
+            'quantidade_conteudo': 'Volume de Conteúdo (1 = pouco, 5 = muito)',
+            'peso': 'Peso / Prioridade',
         }
 
 

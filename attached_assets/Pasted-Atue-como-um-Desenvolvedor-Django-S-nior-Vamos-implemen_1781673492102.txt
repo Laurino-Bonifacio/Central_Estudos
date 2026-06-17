@@ -1,0 +1,42 @@
+Atue como um Desenvolvedor Django Sênior. Vamos implementar um "Ciclo de Estudos Flexível" no aplicativo. Siga os passos abaixo rigorosamente:
+
+1. Atualização do Modelo Disciplina (estudos/models.py):
+Adicione os seguintes campos na classe Disciplina:
+
+dificuldade (IntegerField com choices de 1 a 5, default=3)
+
+quantidade_conteudo (IntegerField com choices de 1 a 5, default=3)
+
+peso (FloatField, default=1.0)
+
+horas_ciclo (IntegerField, default=0) - Representa o total de "quadradinhos" calculados para o ciclo.
+
+horas_concluidas (IntegerField, default=0) - Representa as horas já estudadas no ciclo atual.
+
+Sobrescreva o método save da model Disciplina para calcular automaticamente horas_ciclo antes de salvar no banco: a fórmula deve ser self.horas_ciclo = round((self.dificuldade + self.quantidade_conteudo) * self.peso). Se o cálculo der menor que 1, force o valor para 1.
+
+Após editar, rode python manage.py makemigrations e python manage.py migrate.
+
+2. Formulários (estudos/forms.py):
+Atualize o DisciplinaForm incluindo os campos dificuldade, quantidade_conteudo e peso. O usuário irá preencher essas notas de 1 a 5, mas os campos horas_ciclo e horas_concluidas NÃO devem ir para o formulário.
+
+3. Novas Views de Controle do Ciclo (estudos/views.py):
+Crie duas novas views protegidas por @login_required:
+
+registrar_hora_estudo(request, pk): Busca a disciplina pelo ID e usuário. Se horas_concluidas for menor que horas_ciclo, adicione 1 a horas_concluidas e salve. Redirecione para o dashboard.
+
+resetar_ciclo(request): Busca todas as disciplinas do request.user e atualiza o horas_concluidas de todas elas para 0. Redirecione para o dashboard.
+
+4. Configuração de Rotas (estudos/urls.py):
+Crie os paths correspondentes para registrar_hora_estudo e resetar_ciclo.
+
+5. Interface do Ciclo no Painel (dashboard.html):
+Atualize a listagem de "Minhas Disciplinas" para refletir o ciclo:
+
+Abaixo do nome da matéria, mostre a progressão do tipo: {{ disciplina.horas_concluidas }} / {{ disciplina.horas_ciclo }} horas.
+
+Adicione uma barra de progresso (usando as classes do Bootstrap progress e progress-bar). A porcentagem é (horas_concluidas / horas_ciclo) * 100.
+
+Adicione um pequeno botão "+1 Hora" que chame a rota registrar_hora_estudo. Se a matéria já concluiu todas as horas (horas_concluidas >= horas_ciclo), desabilite esse botão e mostre o texto "Meta Atingida".
+
+No topo ou na base da seção de Disciplinas, adicione um botão de destaque chamado "🔄 Resetar Ciclo" apontando para a view resetar_ciclo (Isso simula apagar os quadradinhos na borracha, como citado no vídeo).

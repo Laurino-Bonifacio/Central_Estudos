@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 
 
 class Disciplina(models.Model):
+    NIVEL_CHOICES = [(i, str(i)) for i in range(1, 6)]
+
     nome = models.CharField(max_length=100)
     cor_identificacao = models.CharField(max_length=20)
     usuario = models.ForeignKey(
@@ -10,6 +12,16 @@ class Disciplina(models.Model):
         on_delete=models.CASCADE,
         related_name='disciplinas'
     )
+    dificuldade = models.IntegerField(choices=NIVEL_CHOICES, default=3)
+    quantidade_conteudo = models.IntegerField(choices=NIVEL_CHOICES, default=3)
+    peso = models.FloatField(default=1.0)
+    horas_ciclo = models.IntegerField(default=0)
+    horas_concluidas = models.IntegerField(default=0)
+
+    def save(self, *args, **kwargs):
+        calculado = round((self.dificuldade + self.quantidade_conteudo) * self.peso)
+        self.horas_ciclo = max(calculado, 1)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.nome

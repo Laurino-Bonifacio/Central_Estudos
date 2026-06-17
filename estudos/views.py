@@ -81,6 +81,21 @@ def remover_avaliacao(request, pk):
     return redirect('dashboard')
 
 
+@login_required
+def registrar_hora_estudo(request, pk):
+    disciplina = get_object_or_404(Disciplina, pk=pk, usuario=request.user)
+    if disciplina.horas_concluidas < disciplina.horas_ciclo:
+        disciplina.horas_concluidas += 1
+        disciplina.save()
+    return redirect('dashboard')
+
+
+@login_required
+def resetar_ciclo(request):
+    Disciplina.objects.filter(usuario=request.user).update(horas_concluidas=0)
+    return redirect('dashboard')
+
+
 def cadastrar_usuario(request):
     if request.user.is_authenticated:
         return redirect('dashboard')

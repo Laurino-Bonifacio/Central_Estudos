@@ -95,30 +95,66 @@
     }
     .btn-remover-av:hover { background: #dc3545; color: #fff; border-color: #dc3545; }
 
-    /* Disciplina chip com botão remover */
-    .disciplina-row {
-      display: inline-flex; align-items: center; gap: 0;
-      border-radius: 10px; overflow: hidden;
-      margin-bottom: 0.5rem; margin-right: 0.4rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    /* Disciplina card com ciclo */
+    .disciplina-card {
+      background: #fff; border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      margin-bottom: 0.75rem; overflow: hidden;
     }
-    .disciplina-chip {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      padding: 0.55rem 0.85rem;
-      font-size: 0.82rem; font-weight: 600; color: #fff;
+    .disciplina-card-header {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.75rem 1rem 0.5rem;
     }
-    .disciplina-chip .dot {
-      width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.5);
+    .disciplina-dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+    .disciplina-nome {
+      font-size: 0.9rem; font-weight: 700; color: #1a1a2e; flex: 1;
+    }
+    .disciplina-horas {
+      font-size: 0.75rem; color: #6c757d; font-weight: 600;
+    }
+    .disciplina-card-body { padding: 0 1rem 0.75rem; }
+    .ciclo-progress {
+      height: 7px; border-radius: 10px; background: #e9ecef;
+      overflow: hidden; margin-bottom: 0.6rem;
+    }
+    .ciclo-progress-bar {
+      height: 100%; border-radius: 10px;
+      transition: width 0.4s ease;
+    }
+    .disciplina-card-footer {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0 1rem 0.75rem;
+    }
+    .btn-hora {
+      font-size: 0.75rem; font-weight: 700; border: none; border-radius: 8px;
+      padding: 0.35rem 0.8rem; cursor: pointer; transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-hora.ativo {
+      background: #f0f4ff; color: #4361ee;
+    }
+    .btn-hora.ativo:hover { background: #4361ee; color: #fff; }
+    .btn-hora.meta {
+      background: #f0faf4; color: #20c997; cursor: default;
     }
     .btn-remover-disc {
       display: inline-flex; align-items: center; justify-content: center;
-      padding: 0 0.6rem; height: 100%;
-      background: rgba(0,0,0,0.18); color: rgba(255,255,255,0.8);
-      border: none; cursor: pointer; font-size: 0.8rem;
-      transition: background 0.15s;
-      text-decoration: none;
+      width: 30px; height: 30px; border-radius: 8px;
+      background: #fff5f7; border: 1.5px solid #fde8ec;
+      color: #dc3545; font-size: 0.8rem; cursor: pointer;
+      transition: all 0.2s; text-decoration: none; flex-shrink: 0;
     }
-    .btn-remover-disc:hover { background: rgba(220,53,69,0.75); color: #fff; }
+    .btn-remover-disc:hover { background: #dc3545; color: #fff; border-color: #dc3545; }
+    .btn-resetar {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.8rem; font-weight: 700; border: 2px solid #4361ee;
+      border-radius: 10px; padding: 0.45rem 1rem;
+      color: #4361ee; background: #f0f4ff; cursor: pointer;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .btn-resetar:hover { background: #4361ee; color: #fff; }
 
     .empty-state { color: #adb5bd; text-align: center; padding: 1rem; font-size: 0.9rem; }
 
@@ -291,24 +327,56 @@
 
     <!-- Disciplinas -->
     <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
-      <div class="section-title"><i class="bi bi-grid me-1"></i>Minhas Disciplinas</div>
-      <a href="{% url 'adicionar_disciplina' %}" class="btn btn-sm" style="background:#f0f4ff; color:#4361ee; border-radius:8px; font-size:0.78rem; font-weight:600;">
-        <i class="bi bi-plus-lg me-1"></i>Nova
-      </a>
+      <div class="section-title"><i class="bi bi-grid me-1"></i>Ciclo de Estudos</div>
+      <div class="d-flex gap-2 align-items-center">
+        {% if disciplinas %}
+          <a href="{% url 'resetar_ciclo' %}"
+             class="btn-resetar"
+             onclick="return confirm('Resetar o ciclo de todas as matérias? Os quadradinhos voltam ao zero.')">
+            <i class="bi bi-arrow-counterclockwise"></i>Resetar Ciclo
+          </a>
+        {% endif %}
+        <a href="{% url 'adicionar_disciplina' %}" class="btn btn-sm" style="background:#f0f4ff; color:#4361ee; border-radius:8px; font-size:0.78rem; font-weight:600;">
+          <i class="bi bi-plus-lg me-1"></i>Nova
+        </a>
+      </div>
     </div>
     <div>
       {% if disciplinas %}
         {% for d in disciplinas %}
-          <div class="disciplina-row" style="background: {{ d.cor_identificacao }};">
-            <span class="disciplina-chip">
-              <span class="dot"></span>{{ d.nome }}
-            </span>
-            <a href="{% url 'remover_disciplina' d.pk %}"
-               class="btn-remover-disc"
-               title="Remover matéria"
-               onclick="return confirm('Remover a matéria \'{{ d.nome }}\'? As avaliações vinculadas ficarão sem matéria.')">
-              <i class="bi bi-trash3"></i>
-            </a>
+          {% if d.horas_ciclo > 0 %}
+            {% widthratio d.horas_concluidas d.horas_ciclo 100 as pct %}
+          {% else %}
+            {% with pct=0 %}{% endwith %}
+          {% endif %}
+          <div class="disciplina-card">
+            <div class="disciplina-card-header">
+              <span class="disciplina-dot" style="background: {{ d.cor_identificacao }};"></span>
+              <span class="disciplina-nome">{{ d.nome }}</span>
+              <span class="disciplina-horas">{{ d.horas_concluidas }}/{{ d.horas_ciclo }}h</span>
+            </div>
+            <div class="disciplina-card-body">
+              <div class="ciclo-progress">
+                <div class="ciclo-progress-bar"
+                     style="width: {% widthratio d.horas_concluidas d.horas_ciclo 100 %}%; background: {{ d.cor_identificacao }};"></div>
+              </div>
+            </div>
+            <div class="disciplina-card-footer">
+              {% if d.horas_concluidas >= d.horas_ciclo %}
+                <span class="btn-hora meta"><i class="bi bi-check-circle-fill me-1"></i>Meta Atingida!</span>
+              {% else %}
+                <a href="{% url 'registrar_hora_estudo' d.pk %}" class="btn-hora ativo">
+                  <i class="bi bi-plus-lg me-1"></i>+1 Hora
+                </a>
+              {% endif %}
+              <span class="ms-auto"></span>
+              <a href="{% url 'remover_disciplina' d.pk %}"
+                 class="btn-remover-disc"
+                 title="Remover matéria"
+                 onclick="return confirm('Remover \'{{ d.nome }}\'? As avaliações vinculadas ficarão sem matéria.')">
+                <i class="bi bi-trash3"></i>
+              </a>
+            </div>
           </div>
         {% endfor %}
       {% else %}
