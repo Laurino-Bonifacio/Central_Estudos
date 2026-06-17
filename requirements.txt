@@ -1,3 +1,7 @@
 django
 pandas
 dotenv
+django
+pandas
+python-dotenv
+gunicorn
