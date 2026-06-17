@@ -10,15 +10,9 @@
     body {
       min-height: 100vh;
       background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
     }
-    .card {
-      border: none;
-      border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    }
+    .card { border: none; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
     .card-body { padding: 2.5rem; }
     .logo-icon {
       width: 70px; height: 70px;
@@ -28,10 +22,8 @@
       margin: 0 auto 1rem;
     }
     .form-control {
-      border-radius: 12px;
-      padding: 0.75rem 1rem;
-      border: 2px solid #e9ecef;
-      transition: border-color 0.2s;
+      border-radius: 12px; padding: 0.75rem 1rem;
+      border: 2px solid #e9ecef; transition: border-color 0.2s;
     }
     .form-control:focus {
       border-color: #4361ee;
@@ -39,37 +31,38 @@
     }
     .btn-login {
       background: linear-gradient(135deg, #4361ee, #7209b7);
-      border: none;
-      border-radius: 12px;
-      padding: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.5px;
+      border: none; border-radius: 12px; padding: 0.75rem;
+      font-weight: 600; letter-spacing: 0.5px;
       transition: opacity 0.2s, transform 0.1s;
     }
     .btn-login:hover { opacity: 0.92; transform: translateY(-1px); }
     .btn-login:active { transform: translateY(0); }
     .input-group-text {
       border-radius: 12px 0 0 12px;
-      border: 2px solid #e9ecef;
-      border-right: none;
+      border: 2px solid #e9ecef; border-right: none;
       background: #f8f9fa;
     }
     .input-group .form-control { border-radius: 0 12px 12px 0; }
     .errorlist { list-style: none; padding: 0; }
     .errorlist li {
-      background: #fff3cd;
-      border-left: 4px solid #ffc107;
-      padding: 0.5rem 0.75rem;
-      border-radius: 8px;
-      color: #856404;
-      font-size: 0.875rem;
+      background: #fff3cd; border-left: 4px solid #ffc107;
+      padding: 0.5rem 0.75rem; border-radius: 8px;
+      color: #856404; font-size: 0.875rem;
     }
+    .divider { border-top: 1px solid #e9ecef; margin: 1.5rem 0; }
+    .btn-signup-outline {
+      border: 2px solid #4361ee; border-radius: 12px; padding: 0.7rem;
+      font-weight: 600; color: #4361ee; background: transparent;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-signup-outline:hover { background: #4361ee; color: #fff; }
   </style>
 </head>
 <body>
   <div class="container px-3" style="max-width: 420px;">
     <div class="card">
       <div class="card-body">
+
         <div class="text-center mb-4">
           <div class="logo-icon">
             <i class="bi bi-book-fill text-white fs-2"></i>
@@ -106,6 +99,14 @@
             <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
           </button>
         </form>
+
+        <div class="divider"></div>
+
+        <p class="text-center small text-muted mb-2">Não tem uma conta ainda?</p>
+        <a href="{% url 'cadastrar' %}" class="btn btn-signup-outline w-100">
+          <i class="bi bi-person-plus me-2"></i>Cadastre-se aqui — é grátis!
+        </a>
+
       </div>
     </div>
     <p class="text-center text-white-50 small mt-3">Central de Estudos &copy; 2026</p>

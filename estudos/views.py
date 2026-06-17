@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login as auth_login
 from django.utils import timezone
 from .models import Disciplina, Avaliacao, MaterialEstudo
 from .forms import DisciplinaForm, AvaliacaoForm
@@ -70,3 +72,17 @@ def remover_disciplina(request, pk):
     disciplina = get_object_or_404(Disciplina, pk=pk, usuario=request.user)
     disciplina.delete()
     return redirect('dashboard')
+
+
+def cadastrar_usuario(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            auth_login(request, user)
+            return redirect('dashboard')
+    else:
+        form = UserCreationForm()
+    return render(request, 'estudos/signup.html', {'form': form})
