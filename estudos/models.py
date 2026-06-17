@@ -27,6 +27,23 @@ class Disciplina(models.Model):
         return self.nome
 
 
+class ConteudoAula(models.Model):
+    disciplina = models.ForeignKey(
+        Disciplina,
+        on_delete=models.CASCADE,
+        related_name='conteudos'
+    )
+    titulo = models.CharField(max_length=200)
+    data_registro = models.DateField()
+    descricao = models.TextField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['-data_registro', 'titulo']
+
+    def __str__(self):
+        return f"{self.disciplina.nome} — {self.titulo}"
+
+
 class Avaliacao(models.Model):
     titulo = models.CharField(max_length=100)
     data_prova = models.DateField()
@@ -37,6 +54,11 @@ class Avaliacao(models.Model):
         Disciplina,
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
+        related_name='avaliacoes'
+    )
+    conteudos_cobrados = models.ManyToManyField(
+        ConteudoAula,
         blank=True,
         related_name='avaliacoes'
     )

@@ -56,6 +56,26 @@
     .check-label { font-size: 0.9rem; font-weight: 600; color: #1a1a2e; }
     .form-check-input { width: 2.5em; height: 1.25em; cursor: pointer; }
     .form-check-input:checked { background-color: #20c997; border-color: #20c997; }
+
+    /* Checkbox list de conteúdos */
+    .conteudos-lista { display: flex; flex-direction: column; gap: 0.4rem; }
+    .conteudo-check-item {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      background: #f8f9fa; border-radius: 10px;
+      padding: 0.7rem 0.9rem; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .conteudo-check-item:has(input:checked) { background: #f0f4ff; }
+    .conteudo-check-item input[type="checkbox"] {
+      width: 1.15em; height: 1.15em; margin-top: 0.15rem;
+      accent-color: #4361ee; cursor: pointer; flex-shrink: 0;
+    }
+    .conteudo-check-label { font-size: 0.85rem; color: #1a1a2e; cursor: pointer; }
+    .conteudo-check-disc { font-size: 0.72rem; color: #6c757d; margin-top: 0.1rem; }
+    .empty-conteudos {
+      background: #f8f9fa; border-radius: 10px; padding: 1rem;
+      text-align: center; color: #adb5bd; font-size: 0.85rem;
+    }
   </style>
 </head>
 <body>
@@ -112,6 +132,29 @@
             {{ form.data_prazo }}
           </div>
         </div>
+
+        <div class="section-divider">Conteúdos que Caem na Prova</div>
+
+        {% if form.conteudos_cobrados.field.queryset.exists %}
+          <div class="conteudos-lista mb-3">
+            {% for choice in form.conteudos_cobrados %}
+              <label class="conteudo-check-item">
+                {{ choice.tag }}
+                <div>
+                  <div class="conteudo-check-label">{{ choice.choice_label }}</div>
+                </div>
+              </label>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-conteudos mb-3">
+            <i class="bi bi-journal-text d-block fs-4 mb-1"></i>
+            Nenhuma aula registrada ainda.<br>
+            <a href="{% url 'dashboard' %}" class="text-primary small">
+              Vá ao Dashboard → Ciclo de Estudos → Conteúdos
+            </a>
+          </div>
+        {% endif %}
 
         <div class="section-divider">Detalhes</div>
 

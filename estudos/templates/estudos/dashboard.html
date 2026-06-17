@@ -369,6 +369,15 @@
                   <i class="bi bi-plus-lg me-1"></i>+1 Hora
                 </a>
               {% endif %}
+              <a href="{% url 'listar_conteudos' d.pk %}"
+                 class="btn-hora ativo ms-1"
+                 title="Ver conteúdos das aulas"
+                 style="background:#f0fff4; color:#20c997;">
+                <i class="bi bi-journal-text me-1"></i>Conteúdos
+                {% with total=d.conteudos.count %}
+                  {% if total %}<span class="badge rounded-pill ms-1" style="background:#20c997; color:#fff; font-size:0.65rem;">{{ total }}</span>{% endif %}
+                {% endwith %}
+              </a>
               <span class="ms-auto"></span>
               <a href="{% url 'remover_disciplina' d.pk %}"
                  class="btn-remover-disc"

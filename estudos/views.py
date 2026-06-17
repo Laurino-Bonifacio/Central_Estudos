@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login as auth_login
 from django.utils import timezone
-from .models import Disciplina, Avaliacao, MaterialEstudo
-from .forms import DisciplinaForm, AvaliacaoForm
+from .models import Disciplina, Avaliacao, MaterialEstudo, ConteudoAula
+from .forms import DisciplinaForm, AvaliacaoForm, ConteudoAulaForm
 
 
 @login_required
@@ -53,6 +53,7 @@ def adicionar_avaliacao(request):
             avaliacao = form.save(commit=False)
             avaliacao.usuario = request.user
             avaliacao.save()
+            form.save_m2m()
             return redirect('dashboard')
     else:
         form = AvaliacaoForm(usuario=request.user)
@@ -94,6 +95,51 @@ def registrar_hora_estudo(request, pk):
 def resetar_ciclo(request):
     Disciplina.objects.filter(usuario=request.user).update(horas_concluidas=0)
     return redirect('dashboard')
+
+
+# ── Conteúdos de Aula ────────────────────────────────────────────────────────
+
+@login_required
+def listar_conteudos(request, disciplina_id):
+    disciplina = get_object_or_404(Disciplina, pk=disciplina_id, usuario=request.user)
+    conteudos = disciplina.conteudos.all()
+    return render(request, 'estudos/listar_conteudos.html', {
+        'disciplina': disciplina,
+        'conteudos': conteudos,
+    })
+
+
+@login_required
+def adicionar_conteudo(request, disciplina_id):
+    disciplina = get_object_or_404(Disciplina, pk=disciplina_id, usuario=request.user)
+    if request.method == 'POST':
+        form = ConteudoAulaForm(request.POST)
+        if form.is_valid():
+            conteudo = form.save(commit=False)
+            conteudo.disciplina = disciplina
+            conteudo.save()
+            return redirect('listar_conteudos', disciplina_id=disciplina.pk)
+    else:
+        form = ConteudoAulaForm(initial={'data_registro': timezone.now().date()})
+    return render(request, 'estudos/adicionar_conteudo.html', {
+        'form': form,
+        'disciplina': disciplina,
+    })
+
+
+@login_required
+def remover_conteudo(request, pk):
+    conteudo = get_object_or_404(ConteudoAula, pk=pk, disciplina__usuario=request.user)
+    disciplina_id = conteudo.disciplina_id
+    conteudo.delete()
+    return redirect('listar_conteudos', disciplina_id=disciplina_id)
+
+
+@login_required
+def remover_todos_conteudos(request, disciplina_id):
+    disciplina = get_object_or_404(Disciplina, pk=disciplina_id, usuario=request.user)
+    disciplina.conteudos.all().delete()
+    return redirect('listar_conteudos', disciplina_id=disciplina.pk)
 
 
 def cadastrar_usuario(request):

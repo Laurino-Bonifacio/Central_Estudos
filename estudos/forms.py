@@ -1,5 +1,5 @@
 from django import forms
-from .models import Disciplina, Avaliacao
+from .models import Disciplina, Avaliacao, ConteudoAula
 
 NIVEL_CHOICES = [(i, str(i)) for i in range(1, 6)]
 
@@ -24,6 +24,32 @@ class DisciplinaForm(forms.ModelForm):
         }
 
 
+class ConteudoAulaForm(forms.ModelForm):
+    class Meta:
+        model = ConteudoAula
+        fields = ['titulo', 'data_registro', 'descricao']
+        widgets = {
+            'titulo': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ex: Derivadas e Integrais'
+            }),
+            'data_registro': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'descricao': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Detalhes da aula, capítulos, observações...'
+            }),
+        }
+        labels = {
+            'titulo': 'Título / Tema da Aula',
+            'data_registro': 'Data da Aula',
+            'descricao': 'Descrição (opcional)',
+        }
+
+
 class AvaliacaoForm(forms.ModelForm):
     class Meta:
         model = Avaliacao
@@ -35,22 +61,29 @@ class AvaliacaoForm(forms.ModelForm):
             'conteudo': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Tópicos, capítulos, dicas...'}),
             'estudo_concluido': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'disciplina': forms.Select(attrs={'class': 'form-select'}),
+            'conteudos_cobrados': forms.CheckboxSelectMultiple(),
         }
         labels = {
             'titulo': 'Título da Avaliação',
             'data_prova': 'Data da Prova',
             'data_prazo': 'Prazo de Estudo',
-            'conteudo': 'Conteúdo / Observações',
+            'conteudo': 'Anotações Gerais',
             'estudo_concluido': 'Estudo já concluído?',
             'disciplina': 'Matéria',
+            'conteudos_cobrados': 'Conteúdos que caem na prova',
         }
 
     def __init__(self, *args, usuario=None, **kwargs):
         super().__init__(*args, **kwargs)
         if usuario:
             self.fields['disciplina'].queryset = Disciplina.objects.filter(usuario=usuario)
+            self.fields['conteudos_cobrados'].queryset = ConteudoAula.objects.filter(
+                disciplina__usuario=usuario
+            ).select_related('disciplina').order_by('disciplina__nome', '-data_registro')
         else:
             self.fields['disciplina'].queryset = Disciplina.objects.none()
+            self.fields['conteudos_cobrados'].queryset = ConteudoAula.objects.none()
         self.fields['disciplina'].required = False
         self.fields['data_prazo'].required = False
         self.fields['conteudo'].required = False
+        self.fields['conteudos_cobrados'].required = False
