@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Disciplina, Avaliacao, MaterialEstudo
@@ -9,22 +9,19 @@ from .forms import DisciplinaForm, AvaliacaoForm
 def dashboard(request):
     hoje = timezone.now().date()
     disciplinas = Disciplina.objects.filter(usuario=request.user)
-    proximas_avaliacoes = (
+    todas_avaliacoes = (
         Avaliacao.objects
-        .filter(usuario=request.user, estudo_concluido=False, data_prova__gte=hoje)
-        .order_by('data_prova')[:5]
+        .filter(usuario=request.user)
+        .order_by('estudo_concluido', 'data_prova')
     )
-    pendentes_count = Avaliacao.objects.filter(
-        usuario=request.user,
-        estudo_concluido=False
-    ).count()
+    pendentes_count = todas_avaliacoes.filter(estudo_concluido=False).count()
     materiais_count = MaterialEstudo.objects.filter(
         disciplina__usuario=request.user
     ).count()
 
     context = {
         'disciplinas': disciplinas,
-        'proximas_avaliacoes': proximas_avaliacoes,
+        'todas_avaliacoes': todas_avaliacoes,
         'pendentes_count': pendentes_count,
         'materiais_count': materiais_count,
         'hoje': hoje,
@@ -58,3 +55,18 @@ def adicionar_avaliacao(request):
     else:
         form = AvaliacaoForm(usuario=request.user)
     return render(request, 'estudos/adicionar_avaliacao.html', {'form': form})
+
+
+@login_required
+def concluir_avaliacao(request, pk):
+    avaliacao = get_object_or_404(Avaliacao, pk=pk, usuario=request.user)
+    avaliacao.estudo_concluido = True
+    avaliacao.save()
+    return redirect('dashboard')
+
+
+@login_required
+def remover_disciplina(request, pk):
+    disciplina = get_object_or_404(Disciplina, pk=pk, usuario=request.user)
+    disciplina.delete()
+    return redirect('dashboard')

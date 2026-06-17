@@ -46,35 +46,71 @@
     .section-title {
       font-size: 0.95rem; font-weight: 700;
       color: #1a1a2e; text-transform: uppercase;
-      letter-spacing: 0.5px; margin-bottom: 0.75rem;
+      letter-spacing: 0.5px; margin-bottom: 0;
     }
 
+    /* Avaliação card */
     .avaliacao-card {
       background: #fff; border: none; border-radius: 14px;
-      padding: 1rem 1.1rem;
+      padding: 0.85rem 1rem;
       box-shadow: 0 2px 10px rgba(0,0,0,0.06);
       display: flex; align-items: center; gap: 0.9rem;
       margin-bottom: 0.6rem;
+      transition: opacity 0.2s;
     }
+    .avaliacao-card.concluida { opacity: 0.6; }
     .avaliacao-date {
       background: #f0f4ff;
       border-radius: 10px; padding: 0.4rem 0.6rem;
-      text-align: center; min-width: 48px; flex-shrink: 0;
+      text-align: center; min-width: 46px; flex-shrink: 0;
     }
-    .avaliacao-date .day { font-size: 1.3rem; font-weight: 800; color: #4361ee; line-height: 1; }
-    .avaliacao-date .month { font-size: 0.65rem; color: #6c757d; text-transform: uppercase; font-weight: 600; }
-    .avaliacao-title { font-size: 0.9rem; font-weight: 600; color: #1a1a2e; margin-bottom: 0.1rem; }
-    .avaliacao-sub { font-size: 0.75rem; color: #6c757d; }
+    .avaliacao-card.concluida .avaliacao-date { background: #f0faf4; }
+    .avaliacao-date .day { font-size: 1.25rem; font-weight: 800; color: #4361ee; line-height: 1; }
+    .avaliacao-card.concluida .avaliacao-date .day { color: #20c997; }
+    .avaliacao-date .month { font-size: 0.62rem; color: #6c757d; text-transform: uppercase; font-weight: 600; }
+    .avaliacao-info { flex: 1; min-width: 0; }
+    .avaliacao-title { font-size: 0.88rem; font-weight: 600; color: #1a1a2e; margin-bottom: 0.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .avaliacao-card.concluida .avaliacao-title { text-decoration: line-through; color: #6c757d; }
+    .avaliacao-sub { font-size: 0.73rem; color: #6c757d; }
 
+    .btn-concluir {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      border: 2px solid #e9ecef; background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      color: #adb5bd; cursor: pointer; transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-concluir:hover { border-color: #20c997; color: #20c997; background: #f0faf4; }
+    .badge-concluida {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      background: #f0faf4; display: flex; align-items: center; justify-content: center;
+      color: #20c997; font-size: 1.1rem;
+    }
+
+    /* Disciplina chip com botão remover */
+    .disciplina-row {
+      display: inline-flex; align-items: center; gap: 0;
+      border-radius: 10px; overflow: hidden;
+      margin-bottom: 0.5rem; margin-right: 0.4rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    }
     .disciplina-chip {
       display: inline-flex; align-items: center; gap: 0.4rem;
-      border-radius: 10px; padding: 0.6rem 1rem;
+      padding: 0.55rem 0.85rem;
       font-size: 0.82rem; font-weight: 600; color: #fff;
-      margin-bottom: 0.5rem; margin-right: 0.4rem;
     }
     .disciplina-chip .dot {
-      width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5);
+      width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.5);
     }
+    .btn-remover-disc {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0 0.6rem; height: 100%;
+      background: rgba(0,0,0,0.18); color: rgba(255,255,255,0.8);
+      border: none; cursor: pointer; font-size: 0.8rem;
+      transition: background 0.15s;
+      text-decoration: none;
+    }
+    .btn-remover-disc:hover { background: rgba(220,53,69,0.75); color: #fff; }
 
     .empty-state { color: #adb5bd; text-align: center; padding: 1rem; font-size: 0.9rem; }
 
@@ -97,9 +133,7 @@
     .nav-item-btn i { font-size: 1.3rem; }
 
     /* FAB */
-    .fab-container {
-      position: relative; display: flex; flex-direction: column; align-items: center;
-    }
+    .fab-container { position: relative; display: flex; flex-direction: column; align-items: center; }
     .fab-main {
       width: 52px; height: 52px;
       background: linear-gradient(135deg, #4361ee, #7209b7);
@@ -112,7 +146,6 @@
     .fab-main:hover { transform: scale(1.08); }
     .fab-main i { color: #fff; font-size: 1.5rem; transition: transform 0.25s; }
     .fab-main.open i { transform: rotate(45deg); }
-
     .fab-menu {
       position: absolute; bottom: 70px; left: 50%; transform: translateX(-50%);
       display: flex; flex-direction: column; gap: 0.5rem; align-items: center;
@@ -126,8 +159,7 @@
       box-shadow: 0 4px 16px rgba(0,0,0,0.13);
       text-decoration: none; color: #1a1a2e;
       font-size: 0.85rem; font-weight: 600;
-      white-space: nowrap;
-      transition: transform 0.15s, box-shadow 0.15s;
+      white-space: nowrap; transition: transform 0.15s, box-shadow 0.15s;
     }
     .fab-option:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.18); color: #1a1a2e; }
     .fab-option .fab-icon {
@@ -135,7 +167,6 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 1rem; flex-shrink: 0;
     }
-
     .fab-overlay {
       display: none; position: fixed; inset: 0; z-index: 150;
       background: rgba(0,0,0,0.25); backdrop-filter: blur(2px);
@@ -147,7 +178,6 @@
 </head>
 <body>
 
-  <!-- Overlay para fechar FAB ao clicar fora -->
   <div class="fab-overlay" id="fabOverlay" onclick="toggleFab()"></div>
 
   <!-- Top Bar -->
@@ -193,45 +223,56 @@
       </div>
     </div>
 
-    <!-- Próximas Avaliações -->
+    <!-- Avaliações -->
     <div class="d-flex justify-content-between align-items-center mb-2">
-      <div class="section-title mb-0"><i class="bi bi-calendar-event me-1"></i>Próximas Avaliações</div>
+      <div class="section-title"><i class="bi bi-calendar-event me-1"></i>Avaliações</div>
       <a href="{% url 'adicionar_avaliacao' %}" class="btn btn-sm" style="background:#fff0f6; color:#e63980; border-radius:8px; font-size:0.78rem; font-weight:600;">
         <i class="bi bi-plus-lg me-1"></i>Nova
       </a>
     </div>
-    {% if proximas_avaliacoes %}
-      {% for av in proximas_avaliacoes %}
-        <div class="avaliacao-card">
+
+    {% if todas_avaliacoes %}
+      {% for av in todas_avaliacoes %}
+        <div class="avaliacao-card {% if av.estudo_concluido %}concluida{% endif %}">
           <div class="avaliacao-date">
             <div class="day">{{ av.data_prova|date:"d" }}</div>
             <div class="month">{{ av.data_prova|date:"M" }}</div>
           </div>
-          <div>
+          <div class="avaliacao-info">
             <div class="avaliacao-title">{{ av.titulo }}</div>
             <div class="avaliacao-sub">
               {% if av.disciplina %}
-                <i class="bi bi-circle-fill me-1" style="font-size:0.5rem; color:{{ av.disciplina.cor_identificacao }};"></i>
+                <i class="bi bi-circle-fill me-1" style="font-size:0.45rem; color:{{ av.disciplina.cor_identificacao }}; vertical-align:middle;"></i>
                 {{ av.disciplina.nome }}
               {% else %}
                 <i class="bi bi-dash me-1"></i>Sem disciplina
               {% endif %}
+              {% if av.estudo_concluido %}
+                &nbsp;·&nbsp;<span style="color:#20c997; font-weight:600;">Concluída</span>
+              {% endif %}
             </div>
           </div>
+          {% if av.estudo_concluido %}
+            <div class="badge-concluida"><i class="bi bi-check-circle-fill"></i></div>
+          {% else %}
+            <a href="{% url 'concluir_avaliacao' av.pk %}" class="btn-concluir" title="Marcar como concluída">
+              <i class="bi bi-check-lg"></i>
+            </a>
+          {% endif %}
         </div>
       {% endfor %}
     {% else %}
       <div class="avaliacao-card">
         <div class="empty-state w-100">
-          <i class="bi bi-check2-circle d-block fs-3 mb-1 text-success"></i>
-          Nenhuma avaliação pendente. Ótimo trabalho!
+          <i class="bi bi-calendar-plus d-block fs-3 mb-1" style="color:#e63980;"></i>
+          Nenhuma avaliação cadastrada ainda.
         </div>
       </div>
     {% endif %}
 
     <!-- Disciplinas -->
     <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
-      <div class="section-title mb-0"><i class="bi bi-grid me-1"></i>Minhas Disciplinas</div>
+      <div class="section-title"><i class="bi bi-grid me-1"></i>Minhas Disciplinas</div>
       <a href="{% url 'adicionar_disciplina' %}" class="btn btn-sm" style="background:#f0f4ff; color:#4361ee; border-radius:8px; font-size:0.78rem; font-weight:600;">
         <i class="bi bi-plus-lg me-1"></i>Nova
       </a>
@@ -239,9 +280,17 @@
     <div>
       {% if disciplinas %}
         {% for d in disciplinas %}
-          <span class="disciplina-chip" style="background: {{ d.cor_identificacao }};">
-            <span class="dot"></span>{{ d.nome }}
-          </span>
+          <div class="disciplina-row" style="background: {{ d.cor_identificacao }};">
+            <span class="disciplina-chip">
+              <span class="dot"></span>{{ d.nome }}
+            </span>
+            <a href="{% url 'remover_disciplina' d.pk %}"
+               class="btn-remover-disc"
+               title="Remover matéria"
+               onclick="return confirm('Remover a matéria \'{{ d.nome }}\'? As avaliações vinculadas ficarão sem matéria.')">
+              <i class="bi bi-trash3"></i>
+            </a>
+          </div>
         {% endfor %}
       {% else %}
         <p class="empty-state"><i class="bi bi-plus-circle d-block fs-3 mb-1"></i>Nenhuma disciplina cadastrada ainda.</p>
@@ -259,7 +308,6 @@
       <i class="bi bi-journal-text"></i>Matérias
     </a>
 
-    <!-- FAB central -->
     <div class="fab-container" style="z-index:201;">
       <div class="fab-menu" id="fabMenu">
         <a href="{% url 'adicionar_avaliacao' %}" class="fab-option">
@@ -286,12 +334,9 @@
 
   <script>
     function toggleFab() {
-      const btn = document.getElementById('fabBtn');
-      const menu = document.getElementById('fabMenu');
-      const overlay = document.getElementById('fabOverlay');
-      btn.classList.toggle('open');
-      menu.classList.toggle('open');
-      overlay.classList.toggle('open');
+      document.getElementById('fabBtn').classList.toggle('open');
+      document.getElementById('fabMenu').classList.toggle('open');
+      document.getElementById('fabOverlay').classList.toggle('open');
     }
   </script>
 </body>
