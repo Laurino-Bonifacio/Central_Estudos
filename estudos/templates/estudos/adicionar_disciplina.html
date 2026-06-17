@@ -93,9 +93,16 @@
             <span>Escolha uma cor para identificar a matéria</span>
           </div>
           <div class="color-suggestions mb-3">
-            {% for cor in "#4361ee,#e63980,#20c997,#fd7e14,#6f42c1,#0dcaf0,#dc3545,#198754,#ffc107,#6c757d"|split:"," %}
-              <div class="color-dot" style="background: {{ cor }};" data-color="{{ cor }}" onclick="selectColor('{{ cor }}')"></div>
-            {% endfor %}
+            <div class="color-dot" style="background:#4361ee;" onclick="selectColor('#4361ee')"></div>
+            <div class="color-dot" style="background:#e63980;" onclick="selectColor('#e63980')"></div>
+            <div class="color-dot" style="background:#20c997;" onclick="selectColor('#20c997')"></div>
+            <div class="color-dot" style="background:#fd7e14;" onclick="selectColor('#fd7e14')"></div>
+            <div class="color-dot" style="background:#6f42c1;" onclick="selectColor('#6f42c1')"></div>
+            <div class="color-dot" style="background:#0dcaf0;" onclick="selectColor('#0dcaf0')"></div>
+            <div class="color-dot" style="background:#dc3545;" onclick="selectColor('#dc3545')"></div>
+            <div class="color-dot" style="background:#198754;" onclick="selectColor('#198754')"></div>
+            <div class="color-dot" style="background:#ffc107;" onclick="selectColor('#ffc107')"></div>
+            <div class="color-dot" style="background:#6c757d;" onclick="selectColor('#6c757d')"></div>
           </div>
           <input type="color" name="cor_identificacao" id="id_cor_identificacao"
                  class="form-control form-control-color" value="#4361ee"
